@@ -11,8 +11,6 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import javax.swing.JPanel;
 
-import org.twbbs.pccprogram.rich.DiceRoller.State;
-
 @SuppressWarnings("serial")
 public class RichPanel extends JPanel {
 
@@ -307,69 +305,16 @@ public class RichPanel extends JPanel {
 			g.setColor(Color.BLACK);
 		}
 
-		paintDiceRoller(g);
+		diceRoller.paintWidget(g);
 
-		paintYesNoDialog(g);
+		dialog.paintWidget(g);
 
 		g.dispose();
 	}
 
-	private void paintDiceRoller(Graphics2D g) {
-		if (diceRoller.getState() == State.ROLLABLE) {
-			g.setColor(Color.LIGHT_GRAY);
-			g.fillRect(BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
-			g.setColor(Color.BLACK);
-			g.drawRect(BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
-			paintString(g, "Roll Dice", BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
-		} else if (diceRoller.getState() == State.ROLLING
-				|| diceRoller.getState() == State.ROLLED) {
-			if (diceRoller.getState() == State.ROLLED)
-				g.setColor(Color.RED);
-
-			g.drawRoundRect(BLOCK, BLOCK / 2, BLOCK, BLOCK, 7, 7);
-
-			int face = diceRoller.getCurrentFace();
-			if (face % 2 == 1) // center
-				g.fillOval(BLOCK * 3 / 2 - 3, BLOCK - 3, 7, 7);
-			if (face == 2 || face >= 4) {// left-top + right-bottom
-				g.fillOval(BLOCK * 5 / 4 - 3, BLOCK * 3 / 4 - 3, 7, 7);
-				g.fillOval(BLOCK * 7 / 4 - 3, BLOCK * 5 / 4 - 3, 7, 7);
-			}
-			if (face == 3 || face >= 4) { // left-bottom + right-top
-				g.fillOval(BLOCK * 7 / 4 - 3, BLOCK * 3 / 4 - 3, 7, 7);
-				g.fillOval(BLOCK * 5 / 4 - 3, BLOCK * 5 / 4 - 3, 7, 7);
-			}
-			if (face == 6) { // left + right
-				g.fillOval(BLOCK * 5 / 4 - 3, BLOCK - 3, 7, 7);
-				g.fillOval(BLOCK * 7 / 4 - 3, BLOCK - 3, 7, 7);
-			}
-
-			if (diceRoller.getState() == State.ROLLED)
-				g.setColor(Color.BLACK);
-		}
-	}
-
-	private void paintYesNoDialog(Graphics2D g) {
-		if (dialog.isEnabled()) {
-			paintString(g, dialog.getQuestion(), 0, BLOCK / 2, BLOCK * 3, BLOCK);
-
-			g.setColor(Color.GREEN);
-			g.fillRect(BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
-			g.setColor(Color.BLACK);
-			g.drawRect(BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
-			paintString(g, "Yes", BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
-
-			g.setColor(Color.RED);
-			g.fillRect(BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
-			g.setColor(Color.BLACK);
-			g.drawRect(BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
-			paintString(g, "No", BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
-		}
-	}
-
 	// Automatically adjust font size if out of bounds
-	private void paintString(Graphics2D g, String s, int x, int y, int width,
-			int height) {
+	public static void paintString(Graphics2D g, String s, int x, int y,
+			int width, int height) {
 		Font font = g.getFont();
 		int sz, textW = Integer.MAX_VALUE;
 		for (sz = font.getSize(); textW > width && sz > 0; sz--)
@@ -390,8 +335,8 @@ public class RichPanel extends JPanel {
 		// g.setColor(c);
 	}
 
-	private void paintString0(Graphics2D g, String s, int x, int y, int width,
-			int height) {
+	private static void paintString0(Graphics2D g, String s, int x, int y,
+			int width, int height) {
 		FontMetrics fm = g.getFontMetrics();
 		g.drawString(s, x + (width - fm.stringWidth(s)) / 2,
 				y + (height - fm.getHeight()) / 2 + fm.getAscent());

@@ -1,28 +1,27 @@
 package org.twbbs.pccprogram.rich;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static org.twbbs.pccprogram.rich.RichPanel.BLOCK;
+import static org.twbbs.pccprogram.rich.RichPanel.paintString;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import static org.twbbs.pccprogram.rich.RichPanel.BLOCK;
-
-public class DiceRoller {
+public class DiceRoller extends Widget {
 
 	enum State {
 		ROLLABLE, ROLLING, ROLLED, UNROLLABLE
 	}
 
-	private RichPanel view;
 	private State state = State.UNROLLABLE;
 	private int currentFace = 1;
-	private List<ActionListener> listeners = new ArrayList<>();
 
 	public DiceRoller(RichPanel view) {
-		this.view = Objects.requireNonNull(view);
+		super(view);
 		this.view.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -34,22 +33,62 @@ public class DiceRoller {
 	private void onClick(MouseEvent e) {
 		if (state != State.ROLLABLE)
 			return;
-		int mx = e.getX(), my = e.getY();
-		// as in RichPanel.paint(Graphics g)
-		mx -= (view.getWidth() - RichPanel.SIZE) / 2;
-		my -= (view.getHeight() - RichPanel.SIZE) / 2;
-		// as in RichPanel.paintControl(Graphics2D g)
-		mx -= 12 * RichPanel.BLOCK;
-		my -= 14 * RichPanel.BLOCK;
+		Point p = convertPoint(e.getPoint());
+		Rectangle bt = new Rectangle(BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
+		if (bt.contains(p))
+			performAction("roll");
+	}
 
-		if (mx < BLOCK / 2 || mx >= BLOCK * 5 / 2 || my < BLOCK / 2
-				|| my >= BLOCK * 3 / 2)
-			return;
+	@Override
+	public void paintWidget(Graphics2D g) {
+		switch (state) {
+		case ROLLABLE:
+			paintRollButton(g);
+			break;
+		case ROLLING:
+			paintRollingDice(g);
+			break;
+		case ROLLED:
+			paintRolledDice(g);
+			break;
+		default:
+			// paint nothing
+			break;
+		}
+	}
 
-		ActionEvent ae = new ActionEvent(DiceRoller.this,
-				ActionEvent.ACTION_PERFORMED, "roll");
-		for (ActionListener lis : listeners)
-			lis.actionPerformed(ae);
+	private void paintRollButton(Graphics2D g) {
+		g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
+		g.setColor(Color.BLACK);
+		g.drawRect(BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
+		paintString(g, "Roll Dice", BLOCK / 2, BLOCK / 2, BLOCK * 2, BLOCK);
+	}
+
+	private void paintRollingDice(Graphics2D g) {
+		// outer boundary
+		g.drawRoundRect(BLOCK, BLOCK / 2, BLOCK, BLOCK, 7, 7);
+		int face = getCurrentFace();
+		if (face % 2 == 1) // center
+			g.fillOval(BLOCK * 3 / 2 - 3, BLOCK - 3, 7, 7);
+		if (face == 2 || face >= 4) {// left-top + right-bottom
+			g.fillOval(BLOCK * 5 / 4 - 3, BLOCK * 3 / 4 - 3, 7, 7);
+			g.fillOval(BLOCK * 7 / 4 - 3, BLOCK * 5 / 4 - 3, 7, 7);
+		}
+		if (face == 3 || face >= 4) { // left-bottom + right-top
+			g.fillOval(BLOCK * 7 / 4 - 3, BLOCK * 3 / 4 - 3, 7, 7);
+			g.fillOval(BLOCK * 5 / 4 - 3, BLOCK * 5 / 4 - 3, 7, 7);
+		}
+		if (face == 6) { // left + right
+			g.fillOval(BLOCK * 5 / 4 - 3, BLOCK - 3, 7, 7);
+			g.fillOval(BLOCK * 7 / 4 - 3, BLOCK - 3, 7, 7);
+		}
+	}
+
+	private void paintRolledDice(Graphics2D g) {
+		g.setColor(Color.RED);
+		paintRollingDice(g);
+		g.setColor(Color.BLACK);
 	}
 
 	public State getState() {
@@ -85,14 +124,5 @@ public class DiceRoller {
 		if (currentFace < 1 || currentFace > 6)
 			throw new IllegalArgumentException("No such face");
 		this.currentFace = currentFace;
-	}
-
-	public void addActionListener(ActionListener lis) {
-		if (lis != null)
-			listeners.add(lis);
-	}
-
-	public boolean removeActionListener(ActionListener lis) {
-		return listeners.remove(lis);
 	}
 }

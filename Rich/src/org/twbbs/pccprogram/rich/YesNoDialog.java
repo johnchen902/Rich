@@ -1,27 +1,24 @@
 package org.twbbs.pccprogram.rich;
 
+import static org.twbbs.pccprogram.rich.RichPanel.BLOCK;
+import static org.twbbs.pccprogram.rich.RichPanel.paintString;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import static org.twbbs.pccprogram.rich.RichPanel.BLOCK;
+public class YesNoDialog extends Widget {
 
-public class YesNoDialog {
-
-	private RichPanel view;
 	private String question = "?";
 	private boolean enabled;
 	private boolean selection;
 
-	private List<ActionListener> listeners = new ArrayList<>();
-
 	public YesNoDialog(RichPanel view) {
-		this.view = Objects.requireNonNull(view);
+		super(view);
 		this.view.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -33,28 +30,32 @@ public class YesNoDialog {
 	private void onClick(MouseEvent e) {
 		if (!enabled)
 			return;
-		int mx = e.getX(), my = e.getY();
-		// as in RichPanel.paint(Graphics g)
-		mx -= (view.getWidth() - RichPanel.SIZE) / 2;
-		my -= (view.getHeight() - RichPanel.SIZE) / 2;
-		// as in RichPanel.paintControl(Graphics2D g)
-		mx -= 12 * RichPanel.BLOCK;
-		my -= 14 * RichPanel.BLOCK;
-
+		Point p = convertPoint(e.getPoint());
 		Rectangle yes = new Rectangle(BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
 		Rectangle no = new Rectangle(BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
+		if (yes.contains(p) || no.contains(p)) {
+			setSelection(yes.contains(p));
+			performAction("selection");
+		}
+	}
 
-		if (yes.contains(mx, my))
-			setSelection(true);
-		else if (no.contains(mx, my))
-			setSelection(false);
-		else
-			return;
+	@Override
+	public void paintWidget(Graphics2D g) {
+		if (enabled) {
+			paintString(g, question, 0, BLOCK / 2, BLOCK * 3, BLOCK);
 
-		ActionEvent ae = new ActionEvent(YesNoDialog.this,
-				ActionEvent.ACTION_PERFORMED, "selection");
-		for (ActionListener lis : listeners)
-			lis.actionPerformed(ae);
+			g.setColor(Color.GREEN);
+			g.fillRect(BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
+			g.setColor(Color.BLACK);
+			g.drawRect(BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
+			paintString(g, "Yes", BLOCK * 6 / 2, BLOCK / 2, BLOCK, BLOCK);
+
+			g.setColor(Color.RED);
+			g.fillRect(BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
+			g.setColor(Color.BLACK);
+			g.drawRect(BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
+			paintString(g, "No", BLOCK * 9 / 2, BLOCK / 2, BLOCK, BLOCK);
+		}
 	}
 
 	public String getQuestion() {
@@ -79,14 +80,5 @@ public class YesNoDialog {
 
 	public void setSelection(boolean selection) {
 		this.selection = selection;
-	}
-
-	public void addActionListener(ActionListener lis) {
-		if (lis != null)
-			listeners.add(lis);
-	}
-
-	public boolean removeActionListener(ActionListener lis) {
-		return listeners.remove(lis);
 	}
 }
