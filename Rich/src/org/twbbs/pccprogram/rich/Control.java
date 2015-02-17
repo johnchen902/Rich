@@ -3,21 +3,26 @@ package org.twbbs.pccprogram.rich;
 import java.awt.SecondaryLoop;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.swing.Timer;
 
 import javax.swing.SwingUtilities;
 
+/**
+ * The controller of this game. All the logics.
+ * 
+ * @author johnchen902
+ */
 public class Control {
 
 	private Model model;
 	private RichPanel view;
 	private SecondaryLoop loop;
-	private Timer timer;
 
+	/**
+	 * Constructor. Initialize things needed.
+	 */
 	public Control() {
 		model = new Model();
-		timer = new Timer();
 
 		if (SwingUtilities.isEventDispatchThread()) {
 			initInEventDispatchThread();
@@ -35,14 +40,27 @@ public class Control {
 		loop = view.getToolkit().getSystemEventQueue().createSecondaryLoop();
 	}
 
+	/**
+	 * Get the model used by this game.
+	 * 
+	 * @return the model
+	 */
 	public Model getModel() {
 		return model;
 	}
 
+	/**
+	 * Get the panel used by this game.
+	 * 
+	 * @return the panel
+	 */
 	public RichPanel getView() {
 		return view;
 	}
 
+	/**
+	 * Starts the game.
+	 */
 	public void startGame() {
 		model.initDefault();
 		view.repaint();
@@ -52,6 +70,9 @@ public class Control {
 		dice.addActionListener(e -> turn());
 	}
 
+	/**
+	 * A single turn of the game.
+	 */
 	private void turn() {
 		DiceRoller d = view.getDiceRoller();
 		Player p = model.getPlayer(model.getTurnTo());
@@ -110,12 +131,18 @@ public class Control {
 		view.repaint();
 	}
 
+	/**
+	 * Turns to next playable player.
+	 */
 	private void toNextTurn() {
 		do {
 			model.toNextTurn();
 		} while (model.getPlayer(model.getTurnTo()).isBankrupt());
 	}
 
+	/**
+	 * Declares the specific player as bankrupted.
+	 */
 	private void bankrupt(Player p) {
 		p.setGold(0);
 		p.setBankrupt(true);
@@ -124,17 +151,28 @@ public class Control {
 		}
 	}
 
+	/**
+	 * Waits for the specific amount of time before returning.
+	 * 
+	 * @param t
+	 *            the amount of time to sleep in milliseconds
+	 */
 	private void sleep(long t) {
 		view.repaint();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				loop.exit();
-			}
-		}, t);
+		Timer timer = new Timer((int) t, e -> loop.exit());
+		timer.setRepeats(false);
+		timer.start();
 		loop.enter();
 	}
 
+	/**
+	 * Waits for the player to respond to a yes-no dialog.
+	 * 
+	 * @param question
+	 *            the question to ask
+	 * @return the player's choice. {@code true} if user chose "Yes",
+	 *         {@code false} if user chose "No"
+	 */
 	private boolean waitDialog(String question) {
 		YesNoDialog dialog = view.getDialog();
 		ActionListener lis = e -> loop.exit();

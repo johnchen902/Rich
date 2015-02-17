@@ -11,11 +11,27 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import javax.swing.JPanel;
 
+/**
+ * The panel that contains the game board. Used like a canva.
+ * 
+ * @author johnchen902
+ */
 @SuppressWarnings("serial")
 public class RichPanel extends JPanel {
 
+	/**
+	 * Number of "blocks" on each dimension.
+	 */
 	public static final int N_BLOCK = 21; // number of blocks
+
+	/**
+	 * The width and height of a "block" in pixels.
+	 */
 	public static final int BLOCK = 32; // block size
+
+	/**
+	 * The size of the game board.
+	 */
 	public static final int SIZE = N_BLOCK * BLOCK;
 
 	private Model model;
@@ -23,25 +39,47 @@ public class RichPanel extends JPanel {
 	private DiceRoller diceRoller;
 	private YesNoDialog dialog;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param model
+	 *            the {@code Model} to be used
+	 */
 	public RichPanel(Model model) {
 		this.model = model;
 		this.diceRoller = new DiceRoller(this);
 		this.dialog = new YesNoDialog(this);
 	}
 
+	/**
+	 * Get the {@code DiceRoller} widget in use.
+	 * 
+	 * @return a {@code DiceRoller} widget
+	 */
 	public DiceRoller getDiceRoller() {
 		return diceRoller;
 	}
 
+	/**
+	 * Get the {@code YesNoDialog} widget in use.
+	 * 
+	 * @return a {@code YesNoDialog} widget
+	 */
 	public YesNoDialog getDialog() {
 		return dialog;
 	}
 
+	/**
+	 * The preferred size is the size of the game board.
+	 */
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(SIZE, SIZE);
 	}
 
+	/**
+	 * Paint everything visible.
+	 */
 	@Override
 	public void paintComponent(Graphics g0) {
 		super.paintComponent(g0);
@@ -74,6 +112,12 @@ public class RichPanel extends JPanel {
 		paintControl(g);
 	}
 
+	/**
+	 * Paint the outer sixty-four places.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 */
 	private void paintOuterLoop(Graphics2D g) {
 		g.drawRect(3 * BLOCK, 3 * BLOCK, 15 * BLOCK, 15 * BLOCK);
 
@@ -96,6 +140,21 @@ public class RichPanel extends JPanel {
 		paintCorner(g, 18 * BLOCK, 0, 48);
 	}
 
+	/**
+	 * Transforms the graphics and let {@link #paintPlace(Graphics2D, int)} do
+	 * its job.
+	 * 
+	 * @param g0
+	 *            the {@code Graphics2D} to be paint on
+	 * @param tx
+	 *            the X coordinate of the origin of the place
+	 * @param ty
+	 *            the Y coordinate of the origin of the place
+	 * @param rt
+	 *            the amount of rotation needed
+	 * @param placeId
+	 *            the id of the place to paint
+	 */
 	private void paintPlace(Graphics2D g0, int tx, int ty, double rt,
 			int placeId) {
 		Graphics2D g = (Graphics2D) g0.create();
@@ -105,6 +164,14 @@ public class RichPanel extends JPanel {
 		g.dispose();
 	}
 
+	/**
+	 * Paint one of the sixty side places.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 * @param placeId
+	 *            the id of the place to paint
+	 */
 	private void paintPlace(Graphics2D g, int placeId) {
 		g.drawLine(0, BLOCK, BLOCK, BLOCK);
 		g.drawLine(BLOCK / 2, BLOCK, BLOCK / 2, BLOCK * 3);
@@ -128,6 +195,19 @@ public class RichPanel extends JPanel {
 		paintString(g, place.getName(), 0, 0, BLOCK * 3 / 2, BLOCK / 2);
 	}
 
+	/**
+	 * Transforms the graphics and let {@link #paintCorner(Graphics2D, int)} do
+	 * its job.
+	 * 
+	 * @param g0
+	 *            the {@code Graphics2D} to be paint on
+	 * @param tx
+	 *            the X coordinate of the origin of the place
+	 * @param ty
+	 *            the Y coordinate of the origin of the place
+	 * @param placeId
+	 *            the id of the place to paint
+	 */
 	private void paintCorner(Graphics2D g0, int tx, int ty, int placeId) {
 		Graphics2D g = (Graphics2D) g0.create();
 		g.translate(tx, ty);
@@ -135,6 +215,14 @@ public class RichPanel extends JPanel {
 		g.dispose();
 	}
 
+	/**
+	 * Paint one of the four corner places.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 * @param placeId
+	 *            the id of the place to paint
+	 */
 	private void paintCorner(Graphics2D g, int placeId) {
 		final int px, py;
 		switch (placeId) {
@@ -164,6 +252,12 @@ public class RichPanel extends JPanel {
 		paintString(g, place.getName(), 0, 0, BLOCK * 3, BLOCK * 3);
 	}
 
+	/**
+	 * Paint the inner four places.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 */
 	private void paintInnerLoop(Graphics2D g) {
 		g.drawLine(BLOCK * 18, BLOCK * 3, BLOCK * 35 / 2, BLOCK * 7 / 2);
 		g.drawLine(BLOCK * 35 / 2, BLOCK * 7 / 2, BLOCK * 25 / 2, BLOCK * 7 / 2);
@@ -183,6 +277,14 @@ public class RichPanel extends JPanel {
 		g.drawLine(BLOCK * 17, BLOCK * 9 / 2, BLOCK * 18, BLOCK * 7 / 2);
 	}
 
+	/**
+	 * Paint the one of the inner four places.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 * @param placeId
+	 *            the id of the place to paint
+	 */
 	private void paintInnerPlace(Graphics2D g, int placeId) {
 		g.drawLine(0, BLOCK, BLOCK, BLOCK);
 		g.drawLine(BLOCK / 2, BLOCK, BLOCK / 2, BLOCK * 3);
@@ -195,6 +297,22 @@ public class RichPanel extends JPanel {
 		paintString(g, place.getName(), 0, 0, BLOCK * 2, BLOCK / 2);
 	}
 
+	/**
+	 * Paint players on the place at specific location.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 * @param placeId
+	 *            the id of the place
+	 * @param x
+	 *            the X coordinate to be paint on
+	 * @param y
+	 *            the Y coordinate to be paint on
+	 * @param width
+	 *            the width available to be paint
+	 * @param height
+	 *            the height available to be paint
+	 */
 	private void paintPlayers(Graphics2D g, int placeId, int x, int y,
 			int width, int height) {
 		model.getPlayers().stream().filter(p -> p.getLocation() == placeId)
@@ -206,6 +324,13 @@ public class RichPanel extends JPanel {
 				});
 	}
 
+	/**
+	 * Paint the table that shows the rents and prices of each level and number
+	 * of houses.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 */
 	private void paintSaleTable(Graphics2D g) {
 		g = (Graphics2D) g.create();
 		g.translate(3 * BLOCK, 3 * BLOCK);
@@ -246,6 +371,13 @@ public class RichPanel extends JPanel {
 		g.dispose();
 	}
 
+	/**
+	 * Generate a short string that describes the amount of money.
+	 * 
+	 * @param $
+	 *            the amount of money to be described
+	 * @return a string the describes the amount of money.
+	 */
 	private String toMoneyString(int $) {
 		String s1 = "$" + $;
 		String s2;
@@ -256,6 +388,12 @@ public class RichPanel extends JPanel {
 		return s1.length() < s2.length() ? s1 : s2;
 	}
 
+	/**
+	 * Paint the table that shows the statistic of each player
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 */
 	private void paintStatTable(Graphics2D g) {
 		g = (Graphics2D) g.create();
 		g.translate(3 * BLOCK, 9 * BLOCK);
@@ -291,6 +429,12 @@ public class RichPanel extends JPanel {
 		g.dispose();
 	}
 
+	/**
+	 * Paint the controls that interacts with players
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 */
 	private void paintControl(Graphics2D g) {
 		g = (Graphics2D) g.create();
 		g.translate(12 * BLOCK, 14 * BLOCK);
@@ -312,7 +456,23 @@ public class RichPanel extends JPanel {
 		g.dispose();
 	}
 
-	// Automatically adjust font size if out of bounds
+	/**
+	 * Paint the string in the center of the specific rectangle. Will adjust the
+	 * font size to fit in the rectangle and set it back before returning..
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 * @param s
+	 *            the string to paint
+	 * @param x
+	 *            the X coordinate of the rectangle
+	 * @param y
+	 *            the Y coordinate of the rectangle
+	 * @param width
+	 *            the width of the rectangle
+	 * @param height
+	 *            the height of the rectangle
+	 */
 	public static void paintString(Graphics2D g, String s, int x, int y,
 			int width, int height) {
 		Font font = g.getFont();
@@ -327,14 +487,27 @@ public class RichPanel extends JPanel {
 			return;
 		}
 
-		// Color c = g.getColor();
-		// g.setColor(Color.RED);
 		g.setFont(font.deriveFont((float) sz));
 		paintString0(g, s, x, y, width, height);
 		g.setFont(font);
-		// g.setColor(c);
 	}
 
+	/**
+	 * Paint the string in the center of the specific rectangle.
+	 * 
+	 * @param g
+	 *            the {@code Graphics2D} to be paint on
+	 * @param s
+	 *            the string to paint
+	 * @param x
+	 *            the X coordinate of the rectangle
+	 * @param y
+	 *            the Y coordinate of the rectangle
+	 * @param width
+	 *            the width of the rectangle
+	 * @param height
+	 *            the height of the rectangle
+	 */
 	private static void paintString0(Graphics2D g, String s, int x, int y,
 			int width, int height) {
 		FontMetrics fm = g.getFontMetrics();

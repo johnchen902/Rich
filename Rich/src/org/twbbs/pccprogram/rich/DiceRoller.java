@@ -11,15 +11,46 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
+/**
+ * A widget that shows the rolling of a dice.
+ * 
+ * @author johnchen902
+ */
 public class DiceRoller extends Widget {
 
-	enum State {
-		ROLLABLE, ROLLING, ROLLED, UNROLLABLE
+	/**
+	 * The state of this roller.
+	 * 
+	 * @author johnchen902
+	 */
+	public enum State {
+		/**
+		 * The dice-roller is waiting for the player to roll.
+		 */
+		ROLLABLE,
+		/**
+		 * The dice is spinning. Shows the current (rapid-changing) face.
+		 */
+		ROLLING,
+		/**
+		 * The dice has stop spinning. Shows the current face.
+		 */
+		ROLLED,
+		/**
+		 * The dice-roller is unusable and show nothing.
+		 */
+		UNROLLABLE
 	}
 
 	private State state = State.UNROLLABLE;
 	private int currentFace = 1;
 
+	/**
+	 * Constructor. Mouse listener is added to the panel.
+	 * 
+	 * @param view
+	 *            the {@code RichPanel} that use this widget.
+	 */
 	public DiceRoller(RichPanel view) {
 		super(view);
 		this.view.addMouseListener(new MouseAdapter() {
@@ -91,36 +122,87 @@ public class DiceRoller extends Widget {
 		g.setColor(Color.BLACK);
 	}
 
+	/**
+	 * Get the state of this dice-roller.
+	 * 
+	 * @return the {@code State}
+	 * @see #setState(State)
+	 */
 	public State getState() {
 		return state;
 	}
 
+	/**
+	 * Set the state of this dice-roller.
+	 * 
+	 * @param state
+	 *            the {@code State}
+	 * @see #getState()
+	 */
 	public void setState(State state) {
 		this.state = Objects.requireNonNull(state);
 	}
 
-	public void startRolling() {
+	/**
+	 * Set the state from {@code State.ROLLABLE} to {@code State.ROLLING} and
+	 * {@code spin} once.
+	 * 
+	 * @throws IllegalStateException
+	 *             if the current state is not {@code State.ROLLABLE}
+	 * @see State#ROLLABLE
+	 * @see State#ROLLING
+	 * @see #spin()
+	 * @see #setState(State)
+	 */
+	public void startRolling() throws IllegalStateException {
 		if (state != State.ROLLABLE)
 			throw new IllegalStateException("state must be ROLLABLE");
 		state = State.ROLLING;
 		spin();
 	}
 
+	/**
+	 * Set the current face to a random face.
+	 */
 	public void spin() {
 		setCurrentFace((int) (Math.random() * 6) + 1);
 	}
 
-	public void stopRolling() {
+	/**
+	 * Set the state from {@code State.ROLLING} to {@code State.ROLLED}.
+	 * 
+	 * @throws IllegalStateException
+	 *             if the current state is not {@code State.ROLLING}
+	 * @see State#ROLLING
+	 * @see State#ROLLED
+	 * @see #setState(State)
+	 */
+	public void stopRolling() throws IllegalStateException {
 		if (state != State.ROLLING)
 			throw new IllegalStateException("state must be ROLLING");
 		state = State.ROLLED;
 	}
 
+	/**
+	 * Get the current face of this dice-roller.
+	 * 
+	 * @return the face; Must be between 1 to 6, inclusive
+	 * @see #setCurrentFace(int)
+	 */
 	public int getCurrentFace() {
 		return currentFace;
 	}
 
-	public void setCurrentFace(int currentFace) {
+	/**
+	 * Set the current face of this dice-roller.
+	 * 
+	 * @param currentFace
+	 *            the face; Must be between 1 to 6, inclusive
+	 * @throws IllegalArgumentException
+	 *             if the provided face is not between 1 to 6
+	 * @see #getCurrentFace()
+	 */
+	public void setCurrentFace(int currentFace) throws IllegalArgumentException {
 		if (currentFace < 1 || currentFace > 6)
 			throw new IllegalArgumentException("No such face");
 		this.currentFace = currentFace;

@@ -11,12 +11,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
+/**
+ * A widget that shows a yes-no dialog.
+ * 
+ * @author johnchen902
+ */
 public class YesNoDialog extends Widget {
 
 	private String question = "?";
 	private boolean enabled;
 	private boolean selection;
 
+	/**
+	 * Constructor. Mouse listener is added to the panel.
+	 * 
+	 * @param view
+	 *            the {@code RichPanel} that use this widget.
+	 */
 	public YesNoDialog(RichPanel view) {
 		super(view);
 		this.view.addMouseListener(new MouseAdapter() {
@@ -58,26 +69,69 @@ public class YesNoDialog extends Widget {
 		}
 	}
 
+	/**
+	 * Get the question asked of player
+	 * 
+	 * @return the question
+	 * @see #setQuestion(String)
+	 */
 	public String getQuestion() {
 		return question;
 	}
 
+	/**
+	 * Set the question asked of player
+	 * 
+	 * @param question
+	 *            the question
+	 * @see #getQuestion()
+	 */
 	public void setQuestion(String question) {
 		this.question = Objects.requireNonNull(question);
 	}
 
+	/**
+	 * Determines whether this dialog is enabled. This dialog is only visible
+	 * and usable when enabled.
+	 * 
+	 * @return {@code true} if the dialog is enabled, {@code false} otherwise
+	 * @see #setEnabled(boolean)
+	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * Enables or disables this dialog, depending on the value of the parameter
+	 * b.
+	 * 
+	 * @param enabled
+	 *            If {@code true}, this dialog is enabled; otherwise this dialog
+	 *            is disabled
+	 * @see #isEnabled()
+	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 
+	/**
+	 * Get the selection of player
+	 * 
+	 * @return {@code true} if user chose "Yes", {@code false} if user chose
+	 *         "No"
+	 * @see #setSelection(boolean)
+	 */
 	public boolean getSelection() {
 		return selection;
 	}
 
+	/**
+	 * Overwrite the selection of player
+	 * 
+	 * @param selection
+	 *            {@code true} if choosing "Yes", {@code false} if choosing "No"
+	 * @see #getSelection()
+	 */
 	public void setSelection(boolean selection) {
 		this.selection = selection;
 	}
