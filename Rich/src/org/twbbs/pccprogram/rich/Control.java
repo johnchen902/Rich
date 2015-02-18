@@ -1,12 +1,5 @@
 package org.twbbs.pccprogram.rich;
 
-import java.awt.SecondaryLoop;
-import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
-import javax.swing.Timer;
-
-import javax.swing.SwingUtilities;
-
 /**
  * The controller of this game. All the logics.
  * 
@@ -15,29 +8,23 @@ import javax.swing.SwingUtilities;
 public class Control {
 
 	private Model model;
-	private RichPanel view;
-	private SecondaryLoop loop;
+	private View view;
 
 	/**
-	 * Constructor. Initialize things needed.
+	 * Just constructor.
 	 */
 	public Control() {
 		model = new Model();
-
-		if (SwingUtilities.isEventDispatchThread()) {
-			initInEventDispatchThread();
-		} else {
-			try {
-				SwingUtilities.invokeAndWait(this::initInEventDispatchThread);
-			} catch (InvocationTargetException | InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
 	}
 
-	private void initInEventDispatchThread() {
-		view = new RichPanel(model);
-		loop = view.getToolkit().getSystemEventQueue().createSecondaryLoop();
+	/**
+	 * Set the view to use.
+	 * 
+	 * @param view
+	 *            the view
+	 */
+	public void setView(View view) {
+		this.view = view;
 	}
 
 	/**
@@ -50,24 +37,14 @@ public class Control {
 	}
 
 	/**
-	 * Get the panel used by this game.
-	 * 
-	 * @return the panel
-	 */
-	public RichPanel getView() {
-		return view;
-	}
-
-	/**
 	 * Starts the game.
 	 */
 	public void startGame() {
 		model.initDefault();
-		view.repaint();
-
 		DiceRoller dice = view.getDiceRoller();
 		dice.setState(DiceRoller.State.ROLLABLE);
 		dice.addActionListener(e -> turn());
+		view.startGame();
 	}
 
 	/**
@@ -128,7 +105,7 @@ public class Control {
 			toNextTurn();
 			d.setState(DiceRoller.State.ROLLABLE);
 		}
-		view.repaint();
+		view.update();
 	}
 
 	/**
@@ -151,38 +128,11 @@ public class Control {
 		}
 	}
 
-	/**
-	 * Waits for the specific amount of time before returning.
-	 * 
-	 * @param t
-	 *            the amount of time to sleep in milliseconds
-	 */
 	private void sleep(long t) {
-		view.repaint();
-		Timer timer = new Timer((int) t, e -> loop.exit());
-		timer.setRepeats(false);
-		timer.start();
-		loop.enter();
+		view.sleep(t);
 	}
 
-	/**
-	 * Waits for the player to respond to a yes-no dialog.
-	 * 
-	 * @param question
-	 *            the question to ask
-	 * @return the player's choice. {@code true} if user chose "Yes",
-	 *         {@code false} if user chose "No"
-	 */
 	private boolean waitDialog(String question) {
-		YesNoDialog dialog = view.getDialog();
-		ActionListener lis = e -> loop.exit();
-		dialog.addActionListener(lis);
-		dialog.setQuestion(question);
-		dialog.setEnabled(true);
-		view.repaint();
-		loop.enter();
-		dialog.setEnabled(false);
-		dialog.removeActionListener(lis);
-		return dialog.getSelection();
+		return view.showDialog(question);
 	}
 }

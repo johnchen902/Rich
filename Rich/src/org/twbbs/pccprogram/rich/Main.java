@@ -22,8 +22,11 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				RichFrame f = new RichFrame();
-				f.getControl().startGame();
+				Control control = new Control();
+				View view = new View();
+				view.setModel(control.getModel());
+				control.setView(view);
+				control.startGame();
 			}
 		});
 	}

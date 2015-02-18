@@ -1,7 +1,7 @@
 package org.twbbs.pccprogram.rich;
 
-import static org.twbbs.pccprogram.rich.RichPanel.BLOCK;
-import static org.twbbs.pccprogram.rich.RichPanel.paintString;
+import static org.twbbs.pccprogram.rich.Panel.BLOCK;
+import static org.twbbs.pccprogram.rich.Panel.paintString;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -48,12 +48,12 @@ public class DiceRoller extends Widget {
 	/**
 	 * Constructor. Mouse listener is added to the panel.
 	 * 
-	 * @param view
+	 * @param panel
 	 *            the {@code RichPanel} that use this widget.
 	 */
-	public DiceRoller(RichPanel view) {
-		super(view);
-		this.view.addMouseListener(new MouseAdapter() {
+	public DiceRoller(Panel panel) {
+		super(panel);
+		this.panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				onClick(e);

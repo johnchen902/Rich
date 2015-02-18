@@ -18,7 +18,7 @@ public abstract class Widget {
 	/**
 	 * The {@code RichPanel} that use this widget.
 	 */
-	protected final RichPanel view;
+	protected final Panel panel;
 
 	/**
 	 * The list of listeners.
@@ -28,11 +28,12 @@ public abstract class Widget {
 	/**
 	 * Constructor. Do nothing important.
 	 * 
-	 * @param view
+	 * @param panel
 	 *            the {@code RichPanel} that use this widget.
 	 */
-	public Widget(RichPanel view) {
-		this.view = Objects.requireNonNull(view);
+	public Widget(Panel panel) {
+		this.panel = Objects.requireNonNull(panel);
+		this.panel.addWidget(this);
 	}
 
 	/**
@@ -96,10 +97,10 @@ public abstract class Widget {
 	 */
 	protected Point convertPoint(Point p) {
 		Point p2 = new Point(p);
-		p2.x -= (view.getWidth() - RichPanel.SIZE) / 2;
-		p2.y -= (view.getHeight() - RichPanel.SIZE) / 2;
-		p2.x -= 12 * RichPanel.BLOCK;
-		p2.y -= 14 * RichPanel.BLOCK;
+		p2.x -= (panel.getWidth() - Panel.SIZE) / 2;
+		p2.y -= (panel.getHeight() - Panel.SIZE) / 2;
+		p2.x -= 12 * Panel.BLOCK;
+		p2.y -= 14 * Panel.BLOCK;
 		return p2;
 	}
 }

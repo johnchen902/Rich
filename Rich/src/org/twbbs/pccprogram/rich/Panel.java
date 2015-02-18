@@ -9,6 +9,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import javax.swing.JPanel;
 
 /**
@@ -17,7 +21,7 @@ import javax.swing.JPanel;
  * @author johnchen902
  */
 @SuppressWarnings("serial")
-public class RichPanel extends JPanel {
+public class Panel extends JPanel {
 
 	/**
 	 * Number of "blocks" on each dimension.
@@ -36,37 +40,26 @@ public class RichPanel extends JPanel {
 
 	private Model model;
 
-	private DiceRoller diceRoller;
-	private YesNoDialog dialog;
+	private List<Widget> widgets = new ArrayList<>();
 
 	/**
-	 * Constructor.
+	 * Set the underling model to be used by this panel
 	 * 
 	 * @param model
-	 *            the {@code Model} to be used
+	 *            the model
 	 */
-	public RichPanel(Model model) {
+	public void setModel(Model model) {
 		this.model = model;
-		this.diceRoller = new DiceRoller(this);
-		this.dialog = new YesNoDialog(this);
 	}
 
 	/**
-	 * Get the {@code DiceRoller} widget in use.
+	 * Add a widget to this panel.
 	 * 
-	 * @return a {@code DiceRoller} widget
+	 * @param widget
+	 *            the widget to add
 	 */
-	public DiceRoller getDiceRoller() {
-		return diceRoller;
-	}
-
-	/**
-	 * Get the {@code YesNoDialog} widget in use.
-	 * 
-	 * @return a {@code YesNoDialog} widget
-	 */
-	public YesNoDialog getDialog() {
-		return dialog;
+	public void addWidget(Widget widget) {
+		widgets.add(Objects.requireNonNull(widget));
 	}
 
 	/**
@@ -449,9 +442,8 @@ public class RichPanel extends JPanel {
 			g.setColor(Color.BLACK);
 		}
 
-		diceRoller.paintWidget(g);
-
-		dialog.paintWidget(g);
+		for (Widget widget : widgets)
+			widget.paintWidget(g);
 
 		g.dispose();
 	}
