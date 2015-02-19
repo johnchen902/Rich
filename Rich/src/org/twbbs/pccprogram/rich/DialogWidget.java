@@ -12,11 +12,11 @@ import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 /**
- * A widget that shows a yes-no dialog.
+ * A widget that prompt player a yes-no question.
  * 
  * @author johnchen902
  */
-public class YesNoDialog extends Widget {
+public class DialogWidget extends Widget {
 
 	private String question = "?";
 	private boolean enabled;
@@ -28,7 +28,7 @@ public class YesNoDialog extends Widget {
 	 * @param panel
 	 *            the {@code RichPanel} that use this widget.
 	 */
-	public YesNoDialog(Panel panel) {
+	public DialogWidget(Panel panel) {
 		super(panel);
 		this.panel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -91,10 +91,10 @@ public class YesNoDialog extends Widget {
 	}
 
 	/**
-	 * Determines whether this dialog is enabled. This dialog is only visible
+	 * Determines whether this widget is enabled. This widget is only visible
 	 * and usable when enabled.
 	 * 
-	 * @return {@code true} if the dialog is enabled, {@code false} otherwise
+	 * @return {@code true} if the widget is enabled, {@code false} otherwise
 	 * @see #setEnabled(boolean)
 	 */
 	public boolean isEnabled() {
@@ -102,11 +102,11 @@ public class YesNoDialog extends Widget {
 	}
 
 	/**
-	 * Enables or disables this dialog, depending on the value of the parameter
+	 * Enables or disables this widget, depending on the value of the parameter
 	 * b.
 	 * 
 	 * @param enabled
-	 *            If {@code true}, this dialog is enabled; otherwise this dialog
+	 *            If {@code true}, this widget is enabled; otherwise this widget
 	 *            is disabled
 	 * @see #isEnabled()
 	 */

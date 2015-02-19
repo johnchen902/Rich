@@ -31,8 +31,8 @@ public class Control {
 		if (this.view != null)
 			throw new IllegalStateException("view is already set");
 		this.view = Objects.requireNonNull(view);
-		DiceRoller dice = view.getDiceRoller();
-		dice.setState(DiceRoller.State.ROLLABLE);
+		DiceWidget dice = view.getDiceWidget();
+		dice.setState(DiceWidget.State.ROLLABLE);
 		dice.addActionListener(e -> turn());
 	}
 
@@ -49,7 +49,7 @@ public class Control {
 	 * A single turn of the game.
 	 */
 	private void turn() {
-		DiceRoller d = view.getDiceRoller();
+		DiceWidget d = view.getDiceWidget();
 		Player p = model.getPlayer(model.getTurnTo());
 
 		d.startRolling();
@@ -70,7 +70,7 @@ public class Control {
 			sleep(100);
 		}
 
-		d.setState(DiceRoller.State.UNROLLABLE);
+		d.setState(DiceWidget.State.UNROLLABLE);
 		Place place = model.getPlace(p.getLocation());
 		if (place instanceof BuyablePlace) {
 			BuyablePlace bp = (BuyablePlace) place;
@@ -101,7 +101,7 @@ public class Control {
 
 		if (!model.isGameOver()) {
 			toNextTurn();
-			d.setState(DiceRoller.State.ROLLABLE);
+			d.setState(DiceWidget.State.ROLLABLE);
 		}
 		view.update();
 	}

@@ -14,8 +14,8 @@ public class View {
 
 	private Frame frame;
 	private SecondaryLoop loop;
-	private DiceRoller dice;
-	private YesNoDialog dialog;
+	private DiceWidget dice;
+	private DialogWidget dialog;
 
 	/**
 	 * Constructor. After construction, in order to render the game,
@@ -29,8 +29,8 @@ public class View {
 		loop = frame.getToolkit().getSystemEventQueue().createSecondaryLoop();
 
 		Panel panel = frame.getPanel();
-		dice = new DiceRoller(panel);
-		dialog = new YesNoDialog(panel);
+		dice = new DiceWidget(panel);
+		dialog = new DialogWidget(panel);
 	}
 
 	/**
@@ -44,20 +44,20 @@ public class View {
 	}
 
 	/**
-	 * Get the {@code DiceRoller} widget in use.
+	 * Get the {@code DiceWidget} in use.
 	 * 
-	 * @return a {@code DiceRoller} widget
+	 * @return a {@code DiceWidget}
 	 */
-	public DiceRoller getDiceRoller() {
+	public DiceWidget getDiceWidget() {
 		return dice;
 	}
 
 	/**
-	 * Get the {@code YesNoDialog} widget in use.
+	 * Get the {@code DialogWidget} in use.
 	 * 
-	 * @return a {@code YesNoDialog} widget
+	 * @return a {@code DialogWidget}
 	 */
-	public YesNoDialog getDialog() {
+	public DialogWidget getDialogWidget() {
 		return dialog;
 	}
 

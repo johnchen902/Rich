@@ -12,20 +12,20 @@ import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 /**
- * A widget that shows the rolling of a dice.
+ * A widget that rolls a dice.
  * 
  * @author johnchen902
  */
-public class DiceRoller extends Widget {
+public class DiceWidget extends Widget {
 
 	/**
-	 * The state of this roller.
+	 * The state of this widget.
 	 * 
 	 * @author johnchen902
 	 */
 	public enum State {
 		/**
-		 * The dice-roller is waiting for the player to roll.
+		 * The widget is waiting for the player to roll the dice.
 		 */
 		ROLLABLE,
 		/**
@@ -33,11 +33,11 @@ public class DiceRoller extends Widget {
 		 */
 		ROLLING,
 		/**
-		 * The dice has stop spinning. Shows the current face.
+		 * The dice has stopped spinning. Shows the current face.
 		 */
 		ROLLED,
 		/**
-		 * The dice-roller is unusable and show nothing.
+		 * The widget is unusable and shows nothing.
 		 */
 		UNROLLABLE
 	}
@@ -51,7 +51,7 @@ public class DiceRoller extends Widget {
 	 * @param panel
 	 *            the {@code RichPanel} that use this widget.
 	 */
-	public DiceRoller(Panel panel) {
+	public DiceWidget(Panel panel) {
 		super(panel);
 		this.panel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -123,7 +123,7 @@ public class DiceRoller extends Widget {
 	}
 
 	/**
-	 * Get the state of this dice-roller.
+	 * Get the state of this widget.
 	 * 
 	 * @return the {@code State}
 	 * @see #setState(State)
@@ -133,7 +133,7 @@ public class DiceRoller extends Widget {
 	}
 
 	/**
-	 * Set the state of this dice-roller.
+	 * Set the state of this widget.
 	 * 
 	 * @param state
 	 *            the {@code State}
@@ -184,9 +184,9 @@ public class DiceRoller extends Widget {
 	}
 
 	/**
-	 * Get the current face of this dice-roller.
+	 * Get the current face of the dice.
 	 * 
-	 * @return the face; Must be between 1 to 6, inclusive
+	 * @return the face; must be between 1 to 6, inclusive
 	 * @see #setCurrentFace(int)
 	 */
 	public int getCurrentFace() {
@@ -194,10 +194,10 @@ public class DiceRoller extends Widget {
 	}
 
 	/**
-	 * Set the current face of this dice-roller.
+	 * Set the current face of the dice.
 	 * 
 	 * @param currentFace
-	 *            the face; Must be between 1 to 6, inclusive
+	 *            the face; must be between 1 to 6, inclusive
 	 * @throws IllegalArgumentException
 	 *             if the provided face is not between 1 to 6
 	 * @see #getCurrentFace()
