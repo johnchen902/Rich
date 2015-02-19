@@ -16,7 +16,7 @@ import java.util.Objects;
 import javax.swing.JPanel;
 
 /**
- * The panel that contains the game board. Used like a canva.
+ * The panel that render the game board. Used like a canvas.
  * 
  * @author johnchen902
  */

@@ -3,7 +3,7 @@ package org.twbbs.pccprogram.rich;
 import javax.swing.JFrame;
 
 /**
- * The frame that contains the entire game.
+ * The frame that render the game.
  * 
  * @author johnchen902
  */

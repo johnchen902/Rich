@@ -1,5 +1,7 @@
 package org.twbbs.pccprogram.rich;
 
+import java.util.Objects;
+
 /**
  * The controller of this game. All the logics.
  * 
@@ -22,9 +24,16 @@ public class Control {
 	 * 
 	 * @param view
 	 *            the view
+	 * @throws IllegalStateException
+	 *             if the view is already set
 	 */
-	public void setView(View view) {
-		this.view = view;
+	public void setView(View view) throws IllegalStateException {
+		if (this.view != null)
+			throw new IllegalStateException("view is already set");
+		this.view = Objects.requireNonNull(view);
+		DiceRoller dice = view.getDiceRoller();
+		dice.setState(DiceRoller.State.ROLLABLE);
+		dice.addActionListener(e -> turn());
 	}
 
 	/**
@@ -34,17 +43,6 @@ public class Control {
 	 */
 	public Model getModel() {
 		return model;
-	}
-
-	/**
-	 * Starts the game.
-	 */
-	public void startGame() {
-		model.initDefault();
-		DiceRoller dice = view.getDiceRoller();
-		dice.setState(DiceRoller.State.ROLLABLE);
-		dice.addActionListener(e -> turn());
-		view.startGame();
 	}
 
 	/**

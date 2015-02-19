@@ -19,15 +19,12 @@ public class Main {
 	 *            currently useless
 	 */
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Control control = new Control();
-				View view = new View();
-				view.setModel(control.getModel());
-				control.setView(view);
-				control.startGame();
-			}
+		SwingUtilities.invokeLater(() -> {
+			Control control = new Control();
+			View view = new View();
+			view.setModel(control.getModel());
+			control.setView(view);
+			view.show();
 		});
 	}
 }

@@ -5,6 +5,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+/**
+ * The view renders everything needed in the game.
+ * 
+ * @author johnchen902
+ */
 public class View {
 
 	private Frame frame;
@@ -12,6 +17,13 @@ public class View {
 	private DiceRoller dice;
 	private YesNoDialog dialog;
 
+	/**
+	 * Constructor. After construction, in order to render the game,
+	 * {@code setModel} and {@code show} must be called, in order.
+	 * 
+	 * @see #setModel(Model)
+	 * @see #show()
+	 */
 	public View() {
 		frame = new Frame();
 		loop = frame.getToolkit().getSystemEventQueue().createSecondaryLoop();
@@ -50,9 +62,9 @@ public class View {
 	}
 
 	/**
-	 * Starts the game.
+	 * Show the view.
 	 */
-	public void startGame() {
+	public void show() {
 		frame.setVisible(true);
 	}
 

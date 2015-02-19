@@ -18,13 +18,11 @@ public class Model {
 	private boolean gameOver;
 
 	/**
-	 * Initialize the model with default starting configuration.
+	 * Constructor. Also properly initialize itself.
 	 */
-	public void initDefault() {
-		players.clear();
+	public Model() {
 		players.add(new Player("A", 50000));
 		players.add(new Player("B", 50000));
-		places.clear();
 		places.add(new Place("Start"));
 		addDefaultSide("S");
 		places.add(new Place("Corner 1"));
