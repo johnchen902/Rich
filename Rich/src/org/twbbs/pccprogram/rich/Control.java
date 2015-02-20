@@ -31,6 +31,9 @@ public class Control {
 		if (this.view != null)
 			throw new IllegalStateException("view is already set");
 		this.view = Objects.requireNonNull(view);
+		NewPlayerWidget np = view.getNewPlayerWidget();
+		np.setEnabled(true);
+		np.addActionListener(e -> addPlayer());
 		DiceWidget dice = view.getDiceWidget();
 		dice.setState(DiceWidget.State.ROLLABLE);
 		dice.addActionListener(e -> turn());
@@ -46,9 +49,25 @@ public class Control {
 	}
 
 	/**
+	 * Add a new player
+	 */
+	private void addPlayer() {
+		String id = Character.toString((char) ('A' + model.getPlayerCount()));
+		model.addPlayer(new Player(id, 50000));
+		if (model.getPlayerCount() == 8)
+			view.getNewPlayerWidget().setEnabled(false);
+		view.update();
+	}
+
+	/**
 	 * A single turn of the game.
 	 */
 	private void turn() {
+		// It won't be able to add new player after the start of first turn.
+		NewPlayerWidget np = view.getNewPlayerWidget();
+		if (np.isEnabled())
+			np.setEnabled(false);
+
 		DiceWidget d = view.getDiceWidget();
 		Player p = model.getPlayer(model.getTurnTo());
 
@@ -123,7 +142,13 @@ public class Control {
 		p.setBankrupt(true);
 		if (model.getPlayers().stream().filter(q -> !q.isBankrupt()).count() == 1) {
 			model.setGameOver(true);
+			return;
 		}
+		model.getBuyablePlaces().stream().filter(x -> x.getOwner() == p)
+				.forEach(x -> {
+					x.setOwner(null);
+					x.setHouses(0);
+				});
 	}
 
 	private void sleep(long t) {

@@ -16,6 +16,7 @@ public class View {
 	private SecondaryLoop loop;
 	private DiceWidget dice;
 	private DialogWidget dialog;
+	private NewPlayerWidget newPlayer;
 
 	/**
 	 * Constructor. After construction, in order to render the game,
@@ -31,6 +32,7 @@ public class View {
 		Panel panel = frame.getPanel();
 		dice = new DiceWidget(panel);
 		dialog = new DialogWidget(panel);
+		newPlayer = new NewPlayerWidget(panel);
 	}
 
 	/**
@@ -59,6 +61,15 @@ public class View {
 	 */
 	public DialogWidget getDialogWidget() {
 		return dialog;
+	}
+
+	/**
+	 * Get the {@code NewPlayerWidget} in use
+	 * 
+	 * @return the {@code NewPlayerWidget}
+	 */
+	public NewPlayerWidget getNewPlayerWidget() {
+		return newPlayer;
 	}
 
 	/**

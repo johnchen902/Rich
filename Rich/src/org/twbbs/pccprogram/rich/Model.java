@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * The model that contains the data need for this game.
@@ -142,6 +143,25 @@ public class Model {
 	 */
 	public Place getPlace(int placeId) {
 		return places.get(placeId);
+	}
+
+	/**
+	 * Get the list of places.
+	 * 
+	 * @return the list of places
+	 */
+	public List<Place> getPlaces() {
+		return Collections.unmodifiableList(places);
+	}
+
+	/**
+	 * Get the list of buy-able places.
+	 * 
+	 * @return the list of buy-able places
+	 */
+	public List<BuyablePlace> getBuyablePlaces() {
+		return places.stream().filter(BuyablePlace.class::isInstance)
+				.map(BuyablePlace.class::cast).collect(Collectors.toList());
 	}
 
 	/**

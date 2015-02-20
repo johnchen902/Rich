@@ -312,9 +312,21 @@ public class Panel extends JPanel {
 				.map(Player::getId).reduce(String::concat).ifPresent(s -> {
 					Font f = g.getFont();
 					g.setFont(f.deriveFont(20f));
-					paintString(g, s, x, y, width, height);
+					paintBreakableString(g, s, x, y, width, height);
 					g.setFont(f);
 				});
+	}
+
+	private static void paintBreakableString(Graphics2D g, String s, int x,
+			int y, int width, int height) {
+		FontMetrics fm = g.getFontMetrics();
+		if (fm.stringWidth(s) >= width * 2) {
+			int halfL = s.length() / 2, halfH = height / 2;
+			paintString(g, s.substring(0, halfL), x, y, width, halfH);
+			paintString(g, s.substring(halfL), x, y + halfH, width, halfH);
+		} else {
+			paintString(g, s, x, y, width, height);
+		}
 	}
 
 	/**
@@ -468,11 +480,9 @@ public class Panel extends JPanel {
 	public static void paintString(Graphics2D g, String s, int x, int y,
 			int width, int height) {
 		Font font = g.getFont();
-		int sz, textW = Integer.MAX_VALUE;
-		for (sz = font.getSize(); textW > width && sz > 0; sz--)
-			textW = g.getFontMetrics(font.deriveFont((float) sz))
-					.stringWidth(s);
-		sz++;
+		int sz = font.getSize();
+		while (!canFit(g, s, sz, width, height) && sz >= 0)
+			sz--;
 
 		if (sz == font.getSize()) {
 			paintString0(g, s, x, y, width, height);
@@ -482,6 +492,12 @@ public class Panel extends JPanel {
 		g.setFont(font.deriveFont((float) sz));
 		paintString0(g, s, x, y, width, height);
 		g.setFont(font);
+	}
+
+	private static boolean canFit(Graphics2D g, String s, float size,
+			int width, int height) {
+		FontMetrics fm = g.getFontMetrics(g.getFont().deriveFont(size));
+		return fm.stringWidth(s) <= width && fm.getAscent() <= height;
 	}
 
 	/**
